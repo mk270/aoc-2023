@@ -136,7 +136,8 @@ tests() :-
     test_pc_colour(),
     test_max_per_colour_per_game(),
     test_max_colours_in_game(),
-    test_accommodates().
+    test_accommodates(),
+    test_tally().
 
 test_subsets() :-
     phrase(subsets(SS), " 3 blue, 4 red; 1 green"),
@@ -195,6 +196,15 @@ test_game_accommodates() :-
     \+ game_accomodates(Bag2, KVP),
     game_accomodates(Bag3, KVP),
     game_accomodates(BagMax, KVP).
+
+test_tally() :-
+    sample_text(Text),
+    tally_accommodating_games_from_string(Text, rgb(12,13,14), Tally),
+    Tally = 8,
+
+    input(Text2),
+    tally_accommodating_games_from_string(Text2, rgb(12,13,14), Tally2),
+    Tally2 = 2149.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
