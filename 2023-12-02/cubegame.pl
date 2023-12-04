@@ -35,16 +35,15 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 %
 %   subsets           - a list of subsets; there may be more than one per "game"
 
-kvps([]) --> [].
+kvps([])             --> [].
 kvps([kvp(S, N)|Ns]) --> game_id(S), ":", subsets(N), "\n", kvps(Ns).
-
-game_id(G) --> "Game ", integer(G).
+game_id(G)           --> "Game ", integer(G).
 
 % for " 3 blue, 4 red"
-subset([W|WW]) --> per_colour(W), ",", subset(WW).
-subset([W]) --> per_colour(W).
+subset([W|WW])  --> per_colour(W), ",", subset(WW).
+subset([W])     --> per_colour(W).
 subsets([S|SS]) --> subset(S), ";", subsets(SS).
-subsets([S]) --> subset(S).
+subsets([S])    --> subset(S).
 
 % for " 3 blue"
 per_colour(pc(Count, Colour)) --> " ", integer(Count), " ", colour(Colour).
