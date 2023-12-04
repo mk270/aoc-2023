@@ -112,7 +112,7 @@ tally_accommodating_games(KVPs, rgb(R, G, B), Result) :-
     game_ids(RelevantGames, GameIDs),
     sum_ids(GameIDs, Result).
 
-% surely there's foldl and reduce?
+% surely there's foldl and map?
 game_ids([], []).
 game_ids([kvp(GameID,_)|TailKVPs], [Result|Results]) :-
     Result = GameID,
