@@ -110,21 +110,38 @@ accommodating_games(KVPs, rgb(R, G, B), Results) :-
 tally_accommodating_games(KVPs, rgb(R, G, B), Result) :-
     accommodating_games(KVPs, rgb(R, G, B), RelevantGames),
     game_ids(RelevantGames, GameIDs),
-    sum_ids(GameIDs, Result).
+    sum(GameIDs, Result).
+
+game_power(kvp(_GameID,PCs), Power) :-
+    max_colours_in_game(PCs, rgb(R,G,B)),
+    Power is R * G * B.
+
+tally_game_powers(KVPs, Result) :-
+    game_powers(KVPs, Powers),
+    sum(Powers, Result).
 
 % surely there's foldl and map?
 game_ids([], []).
 game_ids([kvp(GameID,_)|TailKVPs], [Result|Results]) :-
     Result = GameID,
     game_ids(TailKVPs, Results).
-sum_ids([], 0).
-sum_ids([H|T], Tally) :-
-    sum_ids(T, TTally),
+sum([], 0).
+sum([H|T], Tally) :-
+    sum(T, TTally),
     Tally is H + TTally.
+
+game_powers([], []).
+game_powers([KVP|TailKVPs], [Result|Results]) :-
+    game_power(KVP, Result),
+    game_powers(TailKVPs, Results).
 
 tally_accommodating_games_from_string(S, rgb(R, G, B), Tally) :-
     phrase(kvps(KVPs), S),
     tally_accommodating_games(KVPs, rgb(R, G, B), Tally).
+
+tally_games_powers_from_string(S, Tally) :-
+    phrase(kvps(KVPs), S),
+    tally_game_powers(KVPs, Tally).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,12 +154,13 @@ tests() :-
     test_max_per_colour_per_game(),
     test_max_colours_in_game(),
     test_accommodates(),
-    test_tally().
+    test_tally(),
+    test_powers_tally().
 
 test_subsets() :-
     phrase(subsets(SS), " 3 blue, 4 red; 1 green"),
     SS = [[pc(3, blue), pc(4, red)], [pc(1, green)]].
-    
+
 test_pc_colour() :-
     pc_colour([pc(4,blue),pc(5,blue), pc(3,blue)], R),
     R = 5.
@@ -205,6 +223,12 @@ test_tally() :-
     input(Text2),
     tally_accommodating_games_from_string(Text2, rgb(12,13,14), Tally2),
     Tally2 = 2149.
+
+test_powers_tally() :-
+    sample_text(Text),
+    tally_games_powers_from_string(Text, Tally),
+    Tally = 2286.
+    % full input totals to 71274
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
